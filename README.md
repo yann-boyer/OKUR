@@ -2,6 +2,17 @@ OKUR is a small and basic Chip8 Emulator written in C++, made for fun and my hig
 assignment.
 
 
+# What is implemented now :
+
+- All Chip8 Instructions.
+- Video Output.
+- Keyboard Input.
+
+
+# What is not implemented :
+
+- Sound.
+
 
 If you are on a Linux based system, run these following commands to build the project :
 
