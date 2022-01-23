@@ -54,7 +54,11 @@ $ ./okur /path/to/the/rom
 ```
 
 
-Now, if you are on a Windows system you should use prebuilt binary on the Release section.
+Now, if you are on a Windows system you should use prebuilt binary on the Release section :
+
+
+
+https://github.com/yann-boyer/OKUR/releases/tag/V1.0
 
 
 
