@@ -191,7 +191,7 @@ void CPU::processInput(void) {
 					break;
 				case SDLK_SPACE:
 					if(isPausedFlag) isPausedFlag = false;
-					else isRunningFlag = true;
+					else isPausedFlag = true;
 					break;
 				default:
 					break;
