@@ -12,6 +12,8 @@ assignment.
 # What is not implemented :
 
 - Sound.
+- Super Chip48 OPCODES.
+
 
 
 If you are on a Linux based system, run these following commands to build the project :
