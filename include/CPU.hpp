@@ -11,12 +11,14 @@ Copyright (c) 2022 - Yann BOYER.
 #include<cstdlib>
 #include<array>
 #include<SDL2/SDL.h>
+#include<SDL2/SDL_mixer.h>
 
 #include "MMU.hpp"
 
 class CPU {
 	public:
 		CPU();
+		MMU mmu;
 		static const uint8_t REGISTERS_COUNT = 16;
 		static const uint8_t STACK_SIZE = 16;
 		static const uint8_t KEYS_COUNT = 16;
@@ -56,13 +58,16 @@ class CPU {
 		bool wasKeyPressed;
 		bool drawFlag;
 
+		Mix_Music *beepSound;
+
 		// Functions.
+		void loadROM(const std::string &prgPath);
 		void updateTimers(void);
-		void executeInstruction(CPU &cpu, MMU &mmu);
+		void executeInstruction(void);
 		void processInput(void);
 
 	private:
-		void fetchOpcode(MMU &mmu);
+		void fetchOpcode(void);
 };
 
 #endif

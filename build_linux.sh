@@ -1,2 +1,1 @@
-mkdir bin
-g++ -I include/ src/*.cpp -s -Wall -Wextra -O3 `sdl2-config --cflags` -o bin/okur `sdl2-config --libs`
+g++ -I include/ src/*.cpp -s -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_mixer` -o bin/okur `pkg-config --libs sdl2 SDL2_mixer`

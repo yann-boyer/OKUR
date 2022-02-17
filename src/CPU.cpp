@@ -25,32 +25,44 @@ CPU::CPU() {
 	isPausedFlag = false;
 	wasKeyPressed = false;
 	drawFlag = false;
+
+	beepSound = Mix_LoadMUS("chip8_beep.wav");
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+}
+
+void CPU::loadROM(const std::string &prgPath) {
+	mmu.loadROM(prgPath);
 }
 
 void CPU::updateTimers(void) {
 	if(DT > 0x0) DT--;
-	if(ST > 0x0) ST--;
+	if(ST > 0x0) {
+		ST--;
+		if(ST == 0x1) {
+			Mix_PlayMusic(beepSound, 0);
+		}
+	}
 }
 
-void CPU::fetchOpcode(MMU &mmu) {
+void CPU::fetchOpcode() {
 	uint8_t msB = mmu.readRAM(PC);
 	uint8_t lsB = mmu.readRAM(PC + 1);
 
 	opcode = msB << 8 | lsB;
 }
 
-void CPU::executeInstruction(CPU &cpu, MMU &mmu) {
-	fetchOpcode(mmu);
+void CPU::executeInstruction() {
+	fetchOpcode();
 
 	std::cout << "Current OPCODE -> 0x" << std::hex << opcode << std::dec << std::endl;
 	switch(opcode & 0xF000) {
 		case 0x0000:
 			switch(opcode & 0x00FF) {
 				case 0x00E0:
-					cls(cpu, mmu);
+					cls(*this, mmu);
 					break;
 				case 0x00EE:
-					ret(cpu);
+					ret(*this);
 					break;
 				default:
 					std::cerr << "Unhandled opcode !" << std::endl;
@@ -58,54 +70,54 @@ void CPU::executeInstruction(CPU &cpu, MMU &mmu) {
 			}
 			break;
 		case 0x1000:
-			jump(cpu);
+			jump(*this);
 			break;
 		case 0x2000:
-			call(cpu);
+			call(*this);
 			break;
 		case 0x3000:
-			seByte(cpu);
+			seByte(*this);
 			break;
 		case 0x4000:
-			sneByte(cpu);
+			sneByte(*this);
 			break;
 		case 0x5000:
-			seRegister(cpu);
+			seRegister(*this);
 			break;
 		case 0x6000:
-			ldByte(cpu);
+			ldByte(*this);
 			break;
 		case 0x7000:
-			addByte(cpu);
+			addByte(*this);
 			break;
 		case 0x8000:
 			switch(opcode & 0x000F) {
 				case 0x0000:
-					ldRegToReg(cpu);
+					ldRegToReg(*this);
 					break;
 				case 0x0001:
-					logicalOR(cpu);
+					logicalOR(*this);
 					break;
 				case 0x0002:
-					logicalAND(cpu);
+					logicalAND(*this);
 					break;
 				case 0x0003:
-					exclusiveOR(cpu);
+					exclusiveOR(*this);
 					break;
 				case 0x0004:
-					addRegisterCarry(cpu);
+					addRegisterCarry(*this);
 					break;
 				case 0x0005:
-					sub(cpu);
+					sub(*this);
 					break;
 				case 0x0006:
-					shr(cpu);
+					shr(*this);
 					break;
 				case 0x0007:
-					subn(cpu);
+					subn(*this);
 					break;
 				case 0x000E:
-					shl(cpu);
+					shl(*this);
 					break;
 				default:
 					std::cerr << "Unhandled opcode !" << std::endl;
@@ -113,27 +125,27 @@ void CPU::executeInstruction(CPU &cpu, MMU &mmu) {
 			}
 			break;
 		case 0x9000:
-			sneRegister(cpu);
+			sneRegister(*this);
 			break;
 		case 0xA000:
-			ldi(cpu);
+			ldi(*this);
 			break;
 		case 0xB000:
-			jumpV0(cpu);
+			jumpV0(*this);
 			break;
 		case 0xC000:
-			rnd(cpu);
+			rnd(*this);
 			break;
 		case 0xD000:
-			drw(cpu, mmu);
+			drw(*this, mmu);
 			break;
 		case 0xE000:
 			switch(opcode & 0x00FF) {
 				case 0x009E:
-					skp(cpu);
+					skp(*this);
 					break;
 				case 0x00A1:
-					sknp(cpu);
+					sknp(*this);
 					break;
 				default:
 					std::cerr << "Unhandled opcode !" << std::endl;
@@ -143,31 +155,31 @@ void CPU::executeInstruction(CPU &cpu, MMU &mmu) {
 		case 0xF000:
 			switch(opcode & 0x00FF) {
 				case 0x0007:
-					ldDTOnRegister(cpu);
+					ldDTOnRegister(*this);
 					break;
 				case 0x000A:
-					waitKey(cpu);
+					waitKey(*this);
 					break;
 				case 0x0015:
-					ldRegisterOnDT(cpu);
+					ldRegisterOnDT(*this);
 					break;
 				case 0x0018:
-					ldRegisterOnST(cpu);
+					ldRegisterOnST(*this);
 					break;
 				case 0x001E:
-					addI(cpu);
+					addI(*this);
 					break;
 				case 0x0029:
-					ldF(cpu);
+					ldF(*this);
 					break;
 				case 0x0033:
-					stBCD(cpu, mmu);
+					stBCD(*this, mmu);
 					break;
 				case 0x0055:
-					stRegisters(cpu, mmu);
+					stRegisters(*this, mmu);
 					break;
 				case 0x0065:
-					ldRegisters(cpu, mmu);
+					ldRegisters(*this, mmu);
 					break;
 				default:
 					std::cerr << "Unhandled opcode !" << std::endl;
