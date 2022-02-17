@@ -140,7 +140,7 @@ void sub(CPU &cpu) {
 void shr(CPU &cpu) {
 	uint8_t x = (cpu.opcode & 0x0F00) >> 8;
 
-	cpu.V[0xF] = cpu.V[x] % 2 == 1 ? 1 : 0;
+	cpu.V[0xF] = cpu.V[x] & 0x1;
 
 	cpu.V[x] >>= 1; // Right Shift by 1.
 	cpu.PC += 2;
@@ -160,7 +160,7 @@ void subn(CPU &cpu) {
 void shl(CPU &cpu) {
 	uint8_t x = (cpu.opcode & 0x0F00) >> 8;
 
-	cpu.V[0xF] = (cpu.V[x] & 10000000) == 1 ? 1 : 0;
+	cpu.V[0xF] = (cpu.V[x] & 128) >> 7;
 
 	cpu.V[x] <<= 1; // Left Shift by 1.
 	cpu.PC += 2;
